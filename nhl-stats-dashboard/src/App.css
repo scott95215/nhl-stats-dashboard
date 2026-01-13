@@ -1,0 +1,178 @@
+/* CSS Variables - Clean sports color scheme */
+:root {
+  --color-primary: #1e40af;
+  --color-primary-dark: #1e3a8a;
+  --color-primary-light: rgba(30, 64, 175, 0.1);
+  --color-success: #059669;
+  --color-success-light: rgba(5, 150, 105, 0.1);
+  --color-error: #dc2626;
+  --color-error-light: rgba(220, 38, 38, 0.1);
+  --color-background: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-hover: #f1f5f9;
+  --color-text: #1e293b;
+  --color-text-secondary: #64748b;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* App Layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard */
+.dashboard {
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.dashboard-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.dashboard-section {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.players-section {
+  grid-column: span 5;
+}
+
+.teams-section {
+  grid-column: span 7;
+}
+
+/* Card base styles */
+.card {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary);
+}
+
+.card-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* Footer */
+.dashboard-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 1.5rem;
+}
+
+.dashboard-footer p {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .players-section {
+    grid-column: span 12;
+  }
+
+  .teams-section {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .dashboard-grid {
+    gap: 1rem;
+  }
+
+  .players-section,
+  .teams-section {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 0.75rem;
+  }
+
+  .card-header {
+    padding: 0.875rem 1rem;
+  }
+
+  .card-header h2 {
+    font-size: 0.9rem;
+  }
+}
+
+/* Utility classes */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
