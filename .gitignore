@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Claude Code temp files
+.claude
+tmpclaude-*
+*.cwd
+
+# IntelliJ project files
+*.iml
+out/
