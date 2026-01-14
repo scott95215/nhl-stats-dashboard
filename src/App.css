@@ -1,12 +1,24 @@
-/* CSS Variables - Clean sports color scheme */
+/* CSS Variables - NHL/Oilers branded color scheme */
 :root {
-  --color-primary: #1e40af;
-  --color-primary-dark: #1e3a8a;
-  --color-primary-light: rgba(30, 64, 175, 0.1);
+  /* Oilers Primary Colors */
+  --color-primary: #041E42;
+  --color-primary-dark: #021224;
+  --color-primary-light: rgba(4, 30, 66, 0.1);
+  --color-accent: #FF4C00;
+  --color-accent-dark: #CC3D00;
+  --color-accent-light: rgba(255, 76, 0, 0.1);
+
+  /* Status Colors */
   --color-success: #059669;
   --color-success-light: rgba(5, 150, 105, 0.1);
   --color-error: #dc2626;
   --color-error-light: rgba(220, 38, 38, 0.1);
+
+  /* Hot/Cold Indicators */
+  --color-hot: #FF4C00;
+  --color-cold: #3B82F6;
+
+  /* Surface Colors */
   --color-background: #f1f5f9;
   --color-surface: #ffffff;
   --color-surface-alt: #f8fafc;
@@ -69,11 +81,19 @@ body {
 }
 
 .players-section {
-  grid-column: span 5;
+  grid-column: span 4;
+}
+
+.goalies-section {
+  grid-column: span 4;
 }
 
 .teams-section {
-  grid-column: span 7;
+  grid-column: span 4;
+}
+
+.heatmap-section {
+  grid-column: span 12;
 }
 
 /* Card base styles */
@@ -112,9 +132,10 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .players-section {
-    grid-column: span 12;
+@media (max-width: 1200px) {
+  .players-section,
+  .goalies-section {
+    grid-column: span 6;
   }
 
   .teams-section {
@@ -132,6 +153,7 @@ body {
   }
 
   .players-section,
+  .goalies-section,
   .teams-section {
     grid-column: span 12;
   }

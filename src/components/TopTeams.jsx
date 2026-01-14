@@ -3,7 +3,7 @@ import { Flame, Filter } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import TeamModal from './TeamModal';
-import { formatWinPct, formatGoalDiff, formatRecord } from '../utils/formatters';
+import { formatGoalDiff, formatRecord } from '../utils/formatters';
 import './TopTeams.css';
 
 export default function TopTeams({ teams, loading, error, onRetry, numGames, onNumGamesChange }) {

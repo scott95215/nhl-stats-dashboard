@@ -26,6 +26,15 @@ function getTodayDate() {
   return now.toISOString().split('T')[0];
 }
 
+// Get today's date in Edmonton timezone (MST/MDT)
+function getEdmontonDate() {
+  const now = new Date();
+  const edmontonTime = now.toLocaleString('en-CA', { timeZone: 'America/Edmonton' });
+  // Parse the localized date string to get YYYY-MM-DD
+  const [datePart] = edmontonTime.split(',');
+  return datePart.trim();
+}
+
 async function fetchWithCache(url, cacheKey, cacheDuration = CACHE_DURATION) {
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < cacheDuration) {
@@ -258,7 +267,21 @@ export async function searchPlayers(query) {
   const url = `${SEARCH_URL}/search/player?culture=en-us&limit=20&q=${encodeURIComponent(query)}&active=true`;
   try {
     const data = await fetchWithCache(url, `search-player-${query}`, 60000); // 1 min cache for searches
-    return data || [];
+    if (!data) return [];
+
+    // The search API returns an array of player objects with different field names
+    // Transform to match expected format used by Search component
+    const players = Array.isArray(data) ? data : [];
+
+    return players.map(player => ({
+      playerId: player.playerId || player.id,
+      name: player.name || `${player.firstName || ''} ${player.lastName || ''}`.trim(),
+      teamAbbrev: player.teamAbbrev || player.lastTeamAbbrev || player.currentTeamAbbrev,
+      positionCode: player.positionCode || player.position,
+      sweaterNumber: player.sweaterNumber || player.jerseyNumber,
+      active: player.active !== false,
+      headshot: player.headshot,
+    }));
   } catch (error) {
     console.error('Error searching players:', error);
     return [];
@@ -309,7 +332,7 @@ export async function getTopTeams(limit = 32, numGames = 10) {
           hotnessScore,
           recentRecord: `${recentWins}-${recentLosses}`,
         };
-      } catch (error) {
+      } catch {
         return {
           ...team,
           recentGames: [],
@@ -340,4 +363,152 @@ export async function getAllTeams() {
 // Clear cache (useful for forcing refresh)
 export function clearCache() {
   cache.clear();
+}
+
+// Get today's games schedule with live scores (Edmonton timezone)
+export async function getTodaysGames() {
+  const today = getEdmontonDate();
+  const url = `${BASE_URL}/schedule/${today}`;
+
+  try {
+    // Use shorter cache for live games (60 seconds)
+    const data = await fetchWithCache(url, `schedule-${today}`, 60000);
+
+    if (!data?.gameWeek?.[0]?.games) return [];
+
+    return data.gameWeek[0].games.map(game => ({
+      id: game.id,
+      startTime: game.startTimeUTC,
+      gameState: game.gameState, // 'FUT', 'LIVE', 'OFF', 'FINAL', 'CRIT'
+      period: game.periodDescriptor?.number,
+      periodType: game.periodDescriptor?.periodType,
+      clock: game.clock?.timeRemaining,
+      homeTeam: {
+        abbrev: game.homeTeam?.abbrev,
+        name: game.homeTeam?.placeName?.default,
+        logo: game.homeTeam?.logo,
+        score: game.homeTeam?.score,
+        record: game.homeTeam?.record,
+      },
+      awayTeam: {
+        abbrev: game.awayTeam?.abbrev,
+        name: game.awayTeam?.placeName?.default,
+        logo: game.awayTeam?.logo,
+        score: game.awayTeam?.score,
+        record: game.awayTeam?.record,
+      },
+    }));
+  } catch (error) {
+    console.error('Error fetching today\'s games:', error);
+    return [];
+  }
+}
+
+// Get goalie leaders
+export async function getGoalieLeaders(limit = 30) {
+  const season = getCurrentSeason();
+  const url = `${BASE_URL}/goalie-stats-leaders/${season}/2?categories=wins,savePctg,goalsAgainstAverage&limit=${limit}`;
+  try {
+    const data = await fetchWithCache(url, `goalie-leaders-${limit}`);
+    return data;
+  } catch (error) {
+    console.error('Error fetching goalie leaders:', error);
+    return {};
+  }
+}
+
+// Get goalie game log for recent performance
+export async function getGoalieGameLog(playerId, numGames = 10) {
+  const season = getCurrentSeason();
+  const url = `${BASE_URL}/player/${playerId}/game-log/${season}/2`;
+
+  try {
+    const data = await fetchWithCache(url, `gamelog-goalie-${playerId}`);
+    if (!data.gameLog) return null;
+
+    const recentGames = data.gameLog.slice(0, numGames);
+
+    // Calculate goalie-specific stats
+    const stats = recentGames.reduce((acc, game) => {
+      acc.gamesPlayed += 1;
+      acc.wins += game.decision === 'W' ? 1 : 0;
+      acc.losses += game.decision === 'L' ? 1 : 0;
+      acc.otLosses += game.decision === 'O' ? 1 : 0;
+      acc.shotsAgainst += game.shotsAgainst || 0;
+      acc.goalsAgainst += game.goalsAgainst || 0;
+      acc.saves += (game.shotsAgainst || 0) - (game.goalsAgainst || 0);
+      acc.shutouts += game.shutouts || 0;
+      return acc;
+    }, { gamesPlayed: 0, wins: 0, losses: 0, otLosses: 0, shotsAgainst: 0, goalsAgainst: 0, saves: 0, shutouts: 0 });
+
+    // Calculate averages
+    stats.savePct = stats.shotsAgainst > 0 ? stats.saves / stats.shotsAgainst : 0;
+    stats.gaa = stats.gamesPlayed > 0 ? stats.goalsAgainst / stats.gamesPlayed : 0;
+    stats.winPct = stats.gamesPlayed > 0 ? stats.wins / stats.gamesPlayed : 0;
+
+    return { recentGames, stats };
+  } catch (error) {
+    console.error(`Error fetching goalie game log for ${playerId}:`, error);
+    return null;
+  }
+}
+
+// Get top goalies with hotness calculation
+export async function getTopGoalies(numGames = 10) {
+  try {
+    const leadersData = await getGoalieLeaders(30);
+
+    // Aggregate goalies from different categories
+    const goalieMap = new Map();
+
+    ['wins', 'savePctg', 'goalsAgainstAverage'].forEach(category => {
+      if (!leadersData?.[category]) return;
+      leadersData[category].forEach(goalie => {
+        if (!goalieMap.has(goalie.id)) {
+          goalieMap.set(goalie.id, {
+            id: goalie.id,
+            name: `${goalie.firstName?.default || ''} ${goalie.lastName?.default || ''}`.trim(),
+            teamAbbrev: goalie.teamAbbrev,
+            teamLogo: goalie.teamLogo,
+            headshot: goalie.headshot,
+            sweaterNumber: goalie.sweaterNumber,
+          });
+        }
+      });
+    });
+
+    const goalies = Array.from(goalieMap.values());
+
+    // Fetch game logs for top goalies
+    const goaliesWithStats = await Promise.all(
+      goalies.slice(0, 20).map(async (goalie) => {
+        const gameLog = await getGoalieGameLog(goalie.id, numGames);
+        if (!gameLog?.stats) return null;
+
+        const { stats } = gameLog;
+
+        // Goalie hotness formula: 50% SV%, 30% GAA (inverted), 20% win%
+        // Normalize each component to 0-1 scale
+        const svPctScore = stats.savePct; // already 0-1
+        const gaaScore = Math.max(0, 1 - (stats.gaa / 5)); // GAA of 0 = 1.0, GAA of 5+ = 0
+        const winScore = stats.winPct; // already 0-1
+
+        const hotnessScore = (svPctScore * 0.5) + (gaaScore * 0.3) + (winScore * 0.2);
+
+        return {
+          ...goalie,
+          recentStats: stats,
+          hotnessScore,
+        };
+      })
+    );
+
+    return goaliesWithStats
+      .filter(Boolean)
+      .sort((a, b) => b.hotnessScore - a.hotnessScore)
+      .slice(0, 10);
+  } catch (error) {
+    console.error('Error fetching top goalies:', error);
+    return [];
+  }
 }

@@ -7,6 +7,8 @@ import {
   searchPlayers,
   getPlayerDetails,
   getPlayerGameLog,
+  getTodaysGames,
+  getTopGoalies,
 } from '../api/nhlApi';
 
 // Generic data fetching hook
@@ -212,4 +214,59 @@ export function usePlayerGameLog(playerId, numGames = 10) {
   }, [playerId, numGames]);
 
   return { data, loading, error };
+}
+
+// Hook for today's games with 60-second auto-refresh
+export function useTodaysGames() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    try {
+      const result = await getTodaysGames();
+      setData(result);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to load games');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refetch();
+
+    // Auto-refresh every 60 seconds for live scores
+    const interval = setInterval(refetch, 60000);
+    return () => clearInterval(interval);
+  }, [refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Hook for top goalies with configurable game period
+export function useTopGoalies(numGames = 10) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await getTopGoalies(numGames);
+      setData(result);
+    } catch (err) {
+      setError(err.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }, [numGames]);
+
+  useEffect(() => {
+    refetch();
+  }, [numGames]);
+
+  return { data, loading, error, refetch };
 }

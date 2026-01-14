@@ -1,0 +1,151 @@
+.methodology-section {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.methodology-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+  transition: background-color 0.15s;
+}
+
+.methodology-toggle:hover {
+  background: var(--color-hover);
+}
+
+.methodology-toggle svg:first-child {
+  color: var(--color-primary);
+}
+
+.methodology-toggle svg:last-child {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+}
+
+.methodology-content {
+  padding: 0 1.25rem 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.method-card {
+  background: var(--color-surface-alt);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border-left: 3px solid var(--color-primary);
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-accent);
+}
+
+.method-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.method-card p {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.method-card ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.method-card li {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.method-card li strong {
+  color: var(--color-accent);
+}
+
+.formula {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+}
+
+.method-note {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.methodology-note {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  padding: 0.875rem 1rem;
+  background: var(--color-hover);
+  border-radius: 0.5rem;
+  line-height: 1.5;
+}
+
+.methodology-note strong {
+  color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .methodology-content {
+    grid-template-columns: 1fr;
+    padding: 0 1rem 1rem;
+  }
+
+  .method-card {
+    padding: 0.875rem;
+  }
+
+  .methodology-toggle {
+    padding: 0.875rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .methodology-toggle span {
+    font-size: 0.85rem;
+  }
+
+  .method-card p,
+  .method-card ul {
+    font-size: 0.75rem;
+  }
+
+  .formula {
+    font-size: 0.65rem;
+    padding: 0.375rem 0.5rem;
+  }
+}

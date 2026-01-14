@@ -3,6 +3,7 @@
   color: white;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid var(--color-accent);
 }
 
 .header-content {
