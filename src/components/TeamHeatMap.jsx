@@ -27,7 +27,7 @@ function CustomTooltip({ active, payload, numGames }) {
         <div className="tooltip-stats">
           <span>Season: {team.wins}-{team.losses}-{team.otLosses} ({team.seasonSuccess.toFixed(1)}%)</span>
           <span>Last {numGames}: {team.recentRecord}</span>
-          <span>Hotness: {team.recentHotness.toFixed(1)}%</span>
+          <span>Momentum: {team.recentMomentum.toFixed(1)}%</span>
         </div>
       </div>
     );
@@ -67,8 +67,8 @@ export default function TeamHeatMap({ teams, numGames }) {
       ...team,
       // X-axis: Season success (point percentage)
       seasonSuccess: team.gamesPlayed > 0 ? (team.points / (team.gamesPlayed * 2)) * 100 : 0,
-      // Y-axis: Recent hotness (already calculated 0-1, convert to percentage)
-      recentHotness: team.hotnessScore * 100,
+      // Y-axis: Recent momentum (already calculated 0-1, convert to percentage)
+      recentMomentum: team.hotnessScore * 100,
     }));
   }, [teams]);
 
@@ -77,7 +77,7 @@ export default function TeamHeatMap({ teams, numGames }) {
     if (!chartData.length) return { x: 50, y: 50 };
 
     const xValues = chartData.map(d => d.seasonSuccess).sort((a, b) => a - b);
-    const yValues = chartData.map(d => d.recentHotness).sort((a, b) => a - b);
+    const yValues = chartData.map(d => d.recentMomentum).sort((a, b) => a - b);
 
     const mid = Math.floor(chartData.length / 2);
 
@@ -98,7 +98,7 @@ export default function TeamHeatMap({ teams, numGames }) {
 
   const yDomain = useMemo(() => {
     if (!chartData.length) return [0, 100];
-    const yValues = chartData.map(d => d.recentHotness);
+    const yValues = chartData.map(d => d.recentMomentum);
     const min = Math.floor(Math.min(...yValues) - 5);
     const max = Math.ceil(Math.max(...yValues) + 5);
     return [Math.max(min, 0), Math.min(max, 100)];
@@ -118,20 +118,20 @@ export default function TeamHeatMap({ teams, numGames }) {
 
         <div className="heatmap-legend">
           <div className="legend-item">
-            <span className="legend-color hot-success" />
-            <span>Hot & Winning</span>
+            <span className="legend-color high-success" />
+            <span>High Momentum & Winning</span>
           </div>
           <div className="legend-item">
-            <span className="legend-color hot-struggle" />
-            <span>Hot but Losing</span>
+            <span className="legend-color high-struggle" />
+            <span>High Momentum but Losing</span>
           </div>
           <div className="legend-item">
-            <span className="legend-color cold-success" />
-            <span>Cold but Winning</span>
+            <span className="legend-color low-success" />
+            <span>Low Momentum but Winning</span>
           </div>
           <div className="legend-item">
-            <span className="legend-color cold-struggle" />
-            <span>Cold & Losing</span>
+            <span className="legend-color low-struggle" />
+            <span>Low Momentum & Losing</span>
           </div>
         </div>
 
@@ -191,14 +191,14 @@ export default function TeamHeatMap({ teams, numGames }) {
               />
               <YAxis
                 type="number"
-                dataKey="recentHotness"
-                name="Recent Hotness"
+                dataKey="recentMomentum"
+                name="Recent Momentum"
                 domain={yDomain}
                 tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }}
                 tickLine={{ stroke: 'var(--color-border)' }}
                 axisLine={{ stroke: 'var(--color-border)' }}
                 label={{
-                  value: 'Recent Hotness',
+                  value: 'Recent Momentum',
                   angle: -90,
                   position: 'insideLeft',
                   offset: 10,

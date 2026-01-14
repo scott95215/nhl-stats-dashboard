@@ -140,7 +140,7 @@
   object-fit: contain;
 }
 
-.hotness-icon {
+.momentum-icon {
   position: absolute;
   bottom: -4px;
   right: -4px;
@@ -152,13 +152,13 @@
   justify-content: center;
 }
 
-.hotness-icon.hot {
-  background: var(--color-hot);
+.momentum-icon.high {
+  background: var(--color-momentum-high);
   color: white;
 }
 
-.hotness-icon.cold {
-  background: var(--color-cold);
+.momentum-icon.low {
+  background: var(--color-momentum-low);
   color: white;
 }
 

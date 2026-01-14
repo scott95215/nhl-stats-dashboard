@@ -42,12 +42,12 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.team-side.hotter {
+.team-side.higher-momentum {
   border-color: var(--color-accent);
-  box-shadow: 0 0 20px rgba(255, 76, 0, 0.2);
+  box-shadow: 0 0 20px rgba(207, 69, 32, 0.2);
 }
 
-.hotter-badge {
+.momentum-badge {
   position: absolute;
   top: -12px;
   left: 50%;
@@ -84,7 +84,7 @@
   color: var(--color-text-secondary);
 }
 
-.hotness-rank {
+.momentum-rank {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -94,23 +94,23 @@
   font-weight: 600;
 }
 
-.hotness-rank.hot {
-  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+.momentum-rank.high {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #f97316 100%);
   color: white;
 }
 
-.hotness-rank.warm {
+.momentum-rank.above-avg {
   background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
   color: white;
 }
 
-.hotness-rank.cool {
+.momentum-rank.below-avg {
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
 }
 
-.hotness-rank.cold {
+.momentum-rank.low {
   background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
   color: white;
 }
@@ -256,7 +256,7 @@
   color: var(--color-text-secondary);
 }
 
-.comparison-footer .flame-icon {
+.comparison-footer .momentum-icon {
   color: var(--color-accent);
 }
 

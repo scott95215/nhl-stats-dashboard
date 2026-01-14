@@ -1,0 +1,76 @@
+.league-stats-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.stats-section {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.players-section {
+  grid-column: span 4;
+}
+
+.goalies-section {
+  grid-column: span 4;
+}
+
+.teams-section {
+  grid-column: span 4;
+}
+
+.heatmap-section {
+  grid-column: span 12;
+}
+
+.page-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.page-footer p {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .players-section,
+  .goalies-section {
+    grid-column: span 6;
+  }
+
+  .teams-section {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 768px) {
+  .league-stats-page {
+    gap: 1rem;
+  }
+
+  .stats-grid {
+    gap: 1rem;
+  }
+
+  .players-section,
+  .goalies-section,
+  .teams-section {
+    grid-column: span 12;
+  }
+}

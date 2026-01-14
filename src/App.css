@@ -1,12 +1,16 @@
-/* CSS Variables - NHL/Oilers branded color scheme */
+/* CSS Variables - Edmonton Oilers Alternative Jersey Color Scheme */
 :root {
-  /* Oilers Primary Colors */
-  --color-primary: #041E42;
-  --color-primary-dark: #021224;
-  --color-primary-light: rgba(4, 30, 66, 0.1);
-  --color-accent: #FF4C00;
-  --color-accent-dark: #CC3D00;
-  --color-accent-light: rgba(255, 76, 0, 0.1);
+  /* Oilers Primary Colors - Navy Blue & Orange */
+  --color-primary: #00205B;
+  --color-primary-dark: #001233;
+  --color-primary-light: rgba(0, 32, 91, 0.1);
+  --color-accent: #CF4520;
+  --color-accent-dark: #A63618;
+  --color-accent-light: rgba(207, 69, 32, 0.15);
+
+  /* Oilers Copper/Bronze Accent */
+  --color-copper: #8B4513;
+  --color-copper-light: rgba(139, 69, 19, 0.15);
 
   /* Status Colors */
   --color-success: #059669;
@@ -14,9 +18,9 @@
   --color-error: #dc2626;
   --color-error-light: rgba(220, 38, 38, 0.1);
 
-  /* Hot/Cold Indicators */
-  --color-hot: #FF4C00;
-  --color-cold: #3B82F6;
+  /* Momentum Indicators (replacing hot/cold) */
+  --color-momentum-high: #CF4520;
+  --color-momentum-low: #3B82F6;
 
   /* Surface Colors */
   --color-background: #f1f5f9;
@@ -26,6 +30,10 @@
   --color-hover: #f1f5f9;
   --color-text: #1e293b;
   --color-text-secondary: #64748b;
+
+  /* Legacy aliases for backwards compatibility */
+  --color-hot: var(--color-momentum-high);
+  --color-cold: var(--color-momentum-low);
 }
 
 /* Reset */

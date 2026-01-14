@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Shield, Flame, Filter, X } from 'lucide-react';
+import { Shield, TrendingUp, Filter, X } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import PlayerModal from './PlayerModal';
@@ -71,9 +71,9 @@ export default function HotGoalies({ goalies, allTeams, loading, error, onRetry,
       <div className="card">
         <div className="card-header">
           <Shield size={20} />
-          <h2>Hottest Goalies</h2>
+          <h2>High Momentum Goalies</h2>
         </div>
-        <LoadingSpinner message="Calculating goalie hotness..." />
+        <LoadingSpinner message="Calculating goalie momentum..." />
       </div>
     );
   }
@@ -83,7 +83,7 @@ export default function HotGoalies({ goalies, allTeams, loading, error, onRetry,
       <div className="card">
         <div className="card-header">
           <Shield size={20} />
-          <h2>Hottest Goalies</h2>
+          <h2>High Momentum Goalies</h2>
         </div>
         <ErrorMessage message={error} onRetry={onRetry} />
       </div>
@@ -95,7 +95,7 @@ export default function HotGoalies({ goalies, allTeams, loading, error, onRetry,
       <div className="card">
         <div className="card-header">
           <Shield size={20} />
-          <h2>Hottest Goalies</h2>
+          <h2>High Momentum Goalies</h2>
           <div className="period-selector">
             <span>Last</span>
             <select value={numGames} onChange={(e) => onNumGamesChange(Number(e.target.value))}>
@@ -160,7 +160,7 @@ export default function HotGoalies({ goalies, allTeams, loading, error, onRetry,
             >
               <span className="goalie-rank">
                 {index + 1}
-                {index < 3 && <Flame size={12} className={`flame flame-${index + 1}`} />}
+                {index < 3 && <TrendingUp size={12} className={`momentum-icon momentum-${index + 1}`} />}
               </span>
 
               <div className="goalie-avatar">
@@ -189,7 +189,7 @@ export default function HotGoalies({ goalies, allTeams, loading, error, onRetry,
                   <span className="stat-value">{goalie.recentStats?.wins || 0}-{goalie.recentStats?.losses || 0}</span>
                   <span className="stat-label">W-L</span>
                 </div>
-                <div className="hotness-badge">
+                <div className="momentum-badge">
                   <span>{(goalie.hotnessScore * 100).toFixed(0)}</span>
                 </div>
               </div>

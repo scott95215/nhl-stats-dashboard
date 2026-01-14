@@ -94,26 +94,26 @@
   font-size: 0.875rem;
 }
 
-.flame {
-  color: var(--color-error);
+.momentum-icon {
+  color: var(--color-accent);
 }
 
-.flame-1 {
-  color: #ef4444;
-  animation: flicker 0.5s infinite alternate;
+.momentum-1 {
+  color: var(--color-accent);
+  animation: pulse-momentum 0.5s infinite alternate;
 }
 
-.flame-2 {
+.momentum-2 {
   color: #f97316;
-  animation: flicker 0.7s infinite alternate;
+  animation: pulse-momentum 0.7s infinite alternate;
 }
 
-.flame-3 {
+.momentum-3 {
   color: #eab308;
-  animation: flicker 0.9s infinite alternate;
+  animation: pulse-momentum 0.9s infinite alternate;
 }
 
-@keyframes flicker {
+@keyframes pulse-momentum {
   from { opacity: 0.8; }
   to { opacity: 1; }
 }

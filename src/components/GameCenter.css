@@ -1,0 +1,318 @@
+.game-center {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.game-center.no-game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.no-game-content {
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.no-game-content svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-game-content h3 {
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.game-center-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.game-center-header.live {
+  background: linear-gradient(135deg, var(--color-success), #047857);
+  color: white;
+}
+
+.game-center-header.recap {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+}
+
+.game-center-header.preview {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  color: white;
+}
+
+.live-indicator {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  animation: live-blink 1s ease-in-out infinite;
+}
+
+@keyframes live-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.result-badge {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.today-badge {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+/* Scoreboard styles */
+.live-scoreboard,
+.recap-scoreboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.team-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.team-logo-large {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.team-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.team-score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.team-score.winner {
+  color: var(--color-success);
+}
+
+.team-side.oilers .team-score {
+  color: var(--color-accent);
+}
+
+.score-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+}
+
+.vs-text,
+.final-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.game-venue {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+/* Preview matchup */
+.preview-matchup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.matchup-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.game-datetime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.game-datetime svg {
+  color: var(--color-accent);
+}
+
+.game-datetime .time {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-accent);
+}
+
+.venue-text {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Stats grid */
+.live-stats,
+.recap-content,
+.preview-content {
+  padding: 1.5rem;
+}
+
+.game-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface-alt);
+  border-radius: 0.5rem;
+}
+
+.stat-row .stat-value {
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 60px;
+}
+
+.stat-row .stat-value.oilers {
+  text-align: left;
+  color: var(--color-accent);
+}
+
+.stat-row .stat-value.opponent {
+  text-align: right;
+  color: var(--color-text);
+}
+
+.stat-row .stat-value.leading {
+  font-weight: 700;
+}
+
+.stat-row .stat-label {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .live-scoreboard,
+  .recap-scoreboard,
+  .preview-matchup {
+    padding: 1.5rem 1rem;
+  }
+
+  .team-logo-large {
+    width: 60px;
+    height: 60px;
+  }
+
+  .team-score {
+    font-size: 2.5rem;
+  }
+
+  .team-name {
+    font-size: 0.9rem;
+  }
+
+  .score-divider {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-center-header {
+    padding: 0.875rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .live-scoreboard,
+  .recap-scoreboard,
+  .preview-matchup {
+    padding: 1rem 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .team-logo-large {
+    width: 50px;
+    height: 50px;
+  }
+
+  .team-score {
+    font-size: 2rem;
+  }
+
+  .team-name {
+    font-size: 0.8rem;
+  }
+
+  .live-stats,
+  .recap-content,
+  .preview-content {
+    padding: 1rem;
+  }
+
+  .stat-row {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .stat-row .stat-value {
+    font-size: 0.9rem;
+    min-width: 50px;
+  }
+}

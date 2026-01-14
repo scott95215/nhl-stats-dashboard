@@ -1,28 +1,29 @@
 import { useState } from 'react';
-import { Calendar, Flame, Snowflake } from 'lucide-react';
+import { Calendar, TrendingUp, TrendingDown } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import GameComparisonModal from './GameComparisonModal';
 import './TodaysGames.css';
 
-export default function TodaysGames({ games, loading, teamHotness }) {
+export default function TodaysGames({ games, loading, teamMomentum }) {
   const [selectedGame, setSelectedGame] = useState(null);
-  // Function to get team hotness indicator
-  const getHotnessIndicator = (teamAbbrev) => {
-    if (!teamHotness?.length) return null;
 
-    const sortedTeams = [...teamHotness].sort((a, b) => b.hotnessScore - a.hotnessScore);
+  // Function to get team momentum indicator
+  const getMomentumIndicator = (teamAbbrev) => {
+    if (!teamMomentum?.length) return null;
+
+    const sortedTeams = [...teamMomentum].sort((a, b) => b.hotnessScore - a.hotnessScore);
     const rank = sortedTeams.findIndex(t => t.id === teamAbbrev);
 
     if (rank === -1) return null;
-    // Top 5 = hot, Bottom 5 = cold
-    if (rank < 5) return { type: 'hot', rank: rank + 1 };
-    if (rank >= sortedTeams.length - 5) return { type: 'cold', rank: sortedTeams.length - rank };
+    // Top 5 = high momentum, Bottom 5 = low momentum
+    if (rank < 5) return { type: 'high', rank: rank + 1 };
+    if (rank >= sortedTeams.length - 5) return { type: 'low', rank: sortedTeams.length - rank };
     return null;
   };
 
-  // Get team record from hotness data
+  // Get team record from momentum data
   const getTeamRecord = (teamAbbrev) => {
-    const team = teamHotness?.find(t => t.id === teamAbbrev);
+    const team = teamMomentum?.find(t => t.id === teamAbbrev);
     if (!team) return null;
     return `${team.wins}-${team.losses}-${team.otLosses}`;
   };
@@ -75,8 +76,8 @@ export default function TodaysGames({ games, loading, teamHotness }) {
       <div className="games-scroll">
         {games.map(game => {
           const status = getGameStatus(game);
-          const homeHot = getHotnessIndicator(game.homeTeam.abbrev);
-          const awayHot = getHotnessIndicator(game.awayTeam.abbrev);
+          const homeMomentum = getMomentumIndicator(game.homeTeam.abbrev);
+          const awayMomentum = getMomentumIndicator(game.awayTeam.abbrev);
           const homeRecord = getTeamRecord(game.homeTeam.abbrev);
           const awayRecord = getTeamRecord(game.awayTeam.abbrev);
 
@@ -100,11 +101,11 @@ export default function TodaysGames({ games, loading, teamHotness }) {
                     {game.awayTeam.logo && (
                       <img src={game.awayTeam.logo} alt={game.awayTeam.abbrev} />
                     )}
-                    {awayHot && (
-                      <span className={`hotness-icon ${awayHot.type}`}>
-                        {awayHot.type === 'hot'
-                          ? <Flame size={10} />
-                          : <Snowflake size={10} />
+                    {awayMomentum && (
+                      <span className={`momentum-icon ${awayMomentum.type}`}>
+                        {awayMomentum.type === 'high'
+                          ? <TrendingUp size={10} />
+                          : <TrendingDown size={10} />
                         }
                       </span>
                     )}
@@ -123,11 +124,11 @@ export default function TodaysGames({ games, loading, teamHotness }) {
                     {game.homeTeam.logo && (
                       <img src={game.homeTeam.logo} alt={game.homeTeam.abbrev} />
                     )}
-                    {homeHot && (
-                      <span className={`hotness-icon ${homeHot.type}`}>
-                        {homeHot.type === 'hot'
-                          ? <Flame size={10} />
-                          : <Snowflake size={10} />
+                    {homeMomentum && (
+                      <span className={`momentum-icon ${homeMomentum.type}`}>
+                        {homeMomentum.type === 'high'
+                          ? <TrendingUp size={10} />
+                          : <TrendingDown size={10} />
                         }
                       </span>
                     )}
@@ -147,7 +148,7 @@ export default function TodaysGames({ games, loading, teamHotness }) {
       {selectedGame && (
         <GameComparisonModal
           game={selectedGame}
-          teamHotness={teamHotness}
+          teamMomentum={teamMomentum}
           onClose={() => setSelectedGame(null)}
         />
       )}

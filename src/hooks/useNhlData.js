@@ -9,6 +9,11 @@ import {
   getPlayerGameLog,
   getTodaysGames,
   getTopGoalies,
+  getOilersWeeklySchedule,
+  getOilersGameStatus,
+  getLiveGameData,
+  getGameBoxscore,
+  getMomentumComparison,
 } from '../api/nhlApi';
 
 // Generic data fetching hook
@@ -269,4 +274,162 @@ export function useTopGoalies(numGames = 10) {
   }, [numGames]);
 
   return { data, loading, error, refetch };
+}
+
+// Hook for Oilers weekly schedule
+export function useOilersSchedule() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await getOilersWeeklySchedule();
+      setData(result);
+    } catch (err) {
+      setError(err.message || 'Failed to load schedule');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Hook for Oilers game status with auto-refresh (30 seconds for live games)
+export function useOilersGameStatus() {
+  const [data, setData] = useState({ status: 'none', game: null });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    try {
+      const result = await getOilersGameStatus();
+      setData(result);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to load game status');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refetch();
+
+    // Auto-refresh every 30 seconds for live game updates
+    const interval = setInterval(refetch, 30000);
+    return () => clearInterval(interval);
+  }, [refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Hook for live game data with fast refresh
+export function useLiveGameData(gameId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    if (!gameId) return;
+    try {
+      const result = await getLiveGameData(gameId);
+      setData(result);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to load game data');
+    } finally {
+      setLoading(false);
+    }
+  }, [gameId]);
+
+  useEffect(() => {
+    if (!gameId) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    refetch();
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(refetch, 30000);
+    return () => clearInterval(interval);
+  }, [gameId, refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Hook for game boxscore
+export function useGameBoxscore(gameId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () => {
+    if (!gameId) return;
+    try {
+      const result = await getGameBoxscore(gameId);
+      setData(result);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to load boxscore');
+    } finally {
+      setLoading(false);
+    }
+  }, [gameId]);
+
+  useEffect(() => {
+    if (!gameId) {
+      setData(null);
+      return;
+    }
+
+    setLoading(true);
+    refetch();
+
+    // Auto-refresh every 30 seconds for live games
+    const interval = setInterval(refetch, 30000);
+    return () => clearInterval(interval);
+  }, [gameId, refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Hook for momentum comparison
+export function useMomentumComparison(opponentAbbrev, numGames = 10) {
+  const [data, setData] = useState({ oilers: null, opponent: null, oilersRank: null, opponentRank: null });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!opponentAbbrev) {
+      setData({ oilers: null, opponent: null, oilersRank: null, opponentRank: null });
+      return;
+    }
+
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await getMomentumComparison(opponentAbbrev, numGames);
+        setData(result);
+      } catch (err) {
+        setError(err.message || 'Failed to load momentum comparison');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [opponentAbbrev, numGames]);
+
+  return { data, loading, error };
 }
