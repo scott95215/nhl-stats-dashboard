@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Flame, Filter, X } from 'lucide-react';
+import { TrendingUp, Filter, X } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import PlayerModal from './PlayerModal';
@@ -86,10 +86,10 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
     return (
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Players</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Players</h2>
         </div>
-        <LoadingSpinner message="Calculating player hotness..." />
+        <LoadingSpinner message="Calculating player momentum..." />
       </div>
     );
   }
@@ -98,8 +98,8 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
     return (
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Players</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Players</h2>
         </div>
         <ErrorMessage message={error} onRetry={onRetry} />
       </div>
@@ -110,8 +110,8 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
     <>
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Players</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Players</h2>
           <div className="period-selector">
             <span>Last</span>
             <select value={numGames} onChange={(e) => onNumGamesChange(Number(e.target.value))}>
@@ -188,7 +188,7 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
             >
               <span className="player-rank">
                 {index + 1}
-                {index < 3 && <Flame size={12} className={`flame flame-${index + 1}`} />}
+                {index < 3 && <TrendingUp size={12} className={`trending trending-${index + 1}`} />}
               </span>
               <div className="player-avatar">
                 {player.headshot ? (

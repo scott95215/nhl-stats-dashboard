@@ -4,13 +4,13 @@ import LoadingSpinner from './LoadingSpinner';
 import GameComparisonModal from './GameComparisonModal';
 import './TodaysGames.css';
 
-export default function TodaysGames({ games, loading, teamHotness }) {
+export default function TodaysGames({ games, loading, teamMomentum }) {
   const [selectedGame, setSelectedGame] = useState(null);
   // Function to get team hotness indicator
-  const getHotnessIndicator = (teamAbbrev) => {
-    if (!teamHotness?.length) return null;
+  const getMomentumIndicator = (teamAbbrev) => {
+    if (!teamMomentum?.length) return null;
 
-    const sortedTeams = [...teamHotness].sort((a, b) => b.hotnessScore - a.hotnessScore);
+    const sortedTeams = [...teamMomentum].sort((a, b) => b.momentumScore - a.momentumScore);
     const rank = sortedTeams.findIndex(t => t.id === teamAbbrev);
 
     if (rank === -1) return null;
@@ -22,7 +22,7 @@ export default function TodaysGames({ games, loading, teamHotness }) {
 
   // Get team record from hotness data
   const getTeamRecord = (teamAbbrev) => {
-    const team = teamHotness?.find(t => t.id === teamAbbrev);
+    const team = teamMomentum?.find(t => t.id === teamAbbrev);
     if (!team) return null;
     return `${team.wins}-${team.losses}-${team.otLosses}`;
   };
@@ -75,8 +75,8 @@ export default function TodaysGames({ games, loading, teamHotness }) {
       <div className="games-scroll">
         {games.map(game => {
           const status = getGameStatus(game);
-          const homeHot = getHotnessIndicator(game.homeTeam.abbrev);
-          const awayHot = getHotnessIndicator(game.awayTeam.abbrev);
+          const homeHot = getMomentumIndicator(game.homeTeam.abbrev);
+          const awayHot = getMomentumIndicator(game.awayTeam.abbrev);
           const homeRecord = getTeamRecord(game.homeTeam.abbrev);
           const awayRecord = getTeamRecord(game.awayTeam.abbrev);
 
@@ -147,7 +147,7 @@ export default function TodaysGames({ games, loading, teamHotness }) {
       {selectedGame && (
         <GameComparisonModal
           game={selectedGame}
-          teamHotness={teamHotness}
+          teamMomentum={teamMomentum}
           onClose={() => setSelectedGame(null)}
         />
       )}

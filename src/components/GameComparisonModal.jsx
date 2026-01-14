@@ -3,7 +3,7 @@ import { X, Flame, Snowflake, TrendingUp, TrendingDown } from 'lucide-react';
 import { formatRecord, formatGoalDiff } from '../utils/formatters';
 import './GameComparisonModal.css';
 
-export default function GameComparisonModal({ game, teamHotness, onClose }) {
+export default function GameComparisonModal({ game, teamMomentum, onClose }) {
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') onClose();
@@ -21,28 +21,28 @@ export default function GameComparisonModal({ game, teamHotness, onClose }) {
     if (e.target === e.currentTarget) onClose();
   };
 
-  if (!game || !teamHotness) return null;
+  if (!game || !teamMomentum) return null;
 
-  // Get team data from hotness rankings
-  const awayTeamData = teamHotness.find(t => t.id === game.awayTeam.abbrev);
-  const homeTeamData = teamHotness.find(t => t.id === game.homeTeam.abbrev);
+  // Get team data from momentum rankings
+  const awayTeamData = teamMomentum.find(t => t.id === game.awayTeam.abbrev);
+  const homeTeamData = teamMomentum.find(t => t.id === game.homeTeam.abbrev);
 
   // Sort teams by hotness to get rankings
-  const sortedTeams = [...teamHotness].sort((a, b) => b.hotnessScore - a.hotnessScore);
+  const sortedTeams = [...teamMomentum].sort((a, b) => b.momentumScore - a.momentumScore);
   const awayRank = sortedTeams.findIndex(t => t.id === game.awayTeam.abbrev) + 1;
   const homeRank = sortedTeams.findIndex(t => t.id === game.homeTeam.abbrev) + 1;
 
   const awayHotter = awayRank < homeRank;
   const homeHotter = homeRank < awayRank;
 
-  const getHotnessLabel = (rank) => {
+  const getMomentumLabel = (rank) => {
     if (rank <= 5) return 'Hot';
     if (rank <= 10) return 'Warm';
     if (rank <= 22) return 'Cool';
     return 'Cold';
   };
 
-  const getHotnessClass = (rank) => {
+  const getMomentumClass = (rank) => {
     if (rank <= 5) return 'hot';
     if (rank <= 10) return 'warm';
     if (rank <= 22) return 'cool';
@@ -55,7 +55,7 @@ export default function GameComparisonModal({ game, teamHotness, onClose }) {
         <div className={`team-side ${side}`}>
           <img src={gameTeam.logo} alt={gameTeam.abbrev} className="comparison-logo" />
           <h3>{gameTeam.name || gameTeam.abbrev}</h3>
-          <p className="no-data">No hotness data available</p>
+          <p className="no-data">No momentum data available</p>
         </div>
       );
     }
@@ -72,11 +72,11 @@ export default function GameComparisonModal({ game, teamHotness, onClose }) {
         <h3>{teamData.commonName || teamData.name}</h3>
         <p className="team-division">{teamData.conferenceName} • {teamData.divisionName}</p>
 
-        <div className={`hotness-rank ${getHotnessClass(rank)}`}>
+        <div className={`momentum-rank ${getMomentumClass(rank)}`}>
           {rank <= 5 && <Flame size={16} />}
           {rank > sortedTeams.length - 5 && <Snowflake size={16} />}
           <span className="rank-number">#{rank}</span>
-          <span className="rank-label">{getHotnessLabel(rank)}</span>
+          <span className="rank-label">{getMomentumLabel(rank)}</span>
         </div>
 
         <div className="team-stats-grid">
@@ -108,7 +108,7 @@ export default function GameComparisonModal({ game, teamHotness, onClose }) {
               <span className="stat-label">Goal Diff</span>
             </div>
             <div className="stat-item highlight">
-              <span className="stat-value">{(teamData.hotnessScore * 100).toFixed(0)}</span>
+              <span className="stat-value">{(teamData.momentumScore * 100).toFixed(0)}</span>
               <span className="stat-label">Hotness</span>
             </div>
           </div>
@@ -169,16 +169,16 @@ export default function GameComparisonModal({ game, teamHotness, onClose }) {
             {awayHotter && awayTeamData && homeTeamData && (
               <>
                 <Flame size={14} className="flame-icon" />
-                {awayTeamData.commonName || awayTeamData.name} is currently {Math.abs(homeRank - awayRank)} spots higher in hotness rankings
+                {awayTeamData.commonName || awayTeamData.name} is currently {Math.abs(homeRank - awayRank)} spots higher in momentum rankings
               </>
             )}
             {homeHotter && awayTeamData && homeTeamData && (
               <>
                 <Flame size={14} className="flame-icon" />
-                {homeTeamData.commonName || homeTeamData.name} is currently {Math.abs(homeRank - awayRank)} spots higher in hotness rankings
+                {homeTeamData.commonName || homeTeamData.name} is currently {Math.abs(homeRank - awayRank)} spots higher in momentum rankings
               </>
             )}
-            {!awayHotter && !homeHotter && 'Teams are evenly matched in hotness rankings'}
+            {!awayHotter && !homeHotter && 'Teams are evenly matched in momentum rankings'}
           </p>
         </div>
       </div>

@@ -94,27 +94,27 @@
   font-size: 0.875rem;
 }
 
-.flame {
-  color: var(--color-error);
+.trending {
+  color: var(--color-accent);
 }
 
-.flame-1 {
-  color: #ef4444;
-  animation: flicker 0.5s infinite alternate;
+.trending-1 {
+  color: var(--color-accent);
+  animation: pulse 0.5s infinite alternate;
 }
 
-.flame-2 {
-  color: #f97316;
-  animation: flicker 0.7s infinite alternate;
+.trending-2 {
+  color: var(--color-copper);
+  animation: pulse 0.7s infinite alternate;
 }
 
-.flame-3 {
-  color: #eab308;
-  animation: flicker 0.9s infinite alternate;
+.trending-3 {
+  color: var(--color-copper-dark);
+  animation: pulse 0.9s infinite alternate;
 }
 
-@keyframes flicker {
-  from { opacity: 0.8; }
+@keyframes pulse {
+  from { opacity: 0.7; }
   to { opacity: 1; }
 }
 

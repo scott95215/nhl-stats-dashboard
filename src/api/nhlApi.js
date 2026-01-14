@@ -148,7 +148,7 @@ export async function getPlayerGameLog(playerId, numGames = 10) {
   }
 }
 
-// Get player stats leaders with hotness calculation
+// Get player stats leaders with momentum score calculation
 export async function getTopPlayers(numGames = 10) {
   try {
     // Fetch more players to ensure filtering works across all positions
@@ -194,7 +194,7 @@ export async function getTopPlayers(numGames = 10) {
     // Get all players and fetch their recent game logs
     const players = Array.from(playerMap.values());
 
-    // Fetch game logs for top 50 players to calculate hotness (more for better filtering)
+    // Fetch game logs for top 50 players to calculate momentum score (more for better filtering)
     const top50 = players.sort((a, b) => b.points - a.points).slice(0, 50);
 
     const playersWithGameLogs = await Promise.all(
@@ -209,7 +209,7 @@ export async function getTopPlayers(numGames = 10) {
       })
     );
 
-    // Sort by recent points per game (hotness) and return more for filtering
+    // Sort by recent points per game (momentum score) and return more for filtering
     return playersWithGameLogs
       .sort((a, b) => b.recentPointsPerGame - a.recentPointsPerGame);
   } catch (error) {
@@ -299,7 +299,7 @@ export async function getPlayerDetails(playerId) {
 export async function getTopTeams(limit = 32, numGames = 10) {
   const standings = await getStandings();
 
-  // Fetch recent games for each team to calculate hotness
+  // Fetch recent games for each team to calculate momentum score
   const teamsWithRecentGames = await Promise.all(
     standings.map(async (team) => {
       try {
@@ -312,12 +312,12 @@ export async function getTopTeams(limit = 32, numGames = 10) {
         const recentGoalsAgainst = recentGames.reduce((sum, g) => sum + g.oppScore, 0);
         const recentGoalDiff = recentGoalsFor - recentGoalsAgainst;
 
-        // Calculate hotness score based on recent performance
+        // Calculate momentum score based on recent performance
         const recentWinPct = recentGames.length > 0 ? recentWins / recentGames.length : 0;
         const recentGDPerGame = recentGames.length > 0 ? recentGoalDiff / recentGames.length : 0;
 
-        // Hotness score: 60% recent win%, 40% recent goal diff per game
-        const hotnessScore = (recentWinPct * 0.6) + ((recentGDPerGame + 3) / 6 * 0.4);
+        // Momentum score: 60% recent win%, 40% recent goal diff per game
+        const momentumScore = (recentWinPct * 0.6) + ((recentGDPerGame + 3) / 6 * 0.4);
 
         return {
           ...team,
@@ -329,7 +329,7 @@ export async function getTopTeams(limit = 32, numGames = 10) {
           recentGoalDiff,
           recentWinPct,
           recentGDPerGame,
-          hotnessScore,
+          momentumScore,
           recentRecord: `${recentWins}-${recentLosses}`,
         };
       } catch {
@@ -343,7 +343,7 @@ export async function getTopTeams(limit = 32, numGames = 10) {
           recentGoalDiff: 0,
           recentWinPct: 0,
           recentGDPerGame: 0,
-          hotnessScore: 0,
+          momentumScore: 0,
           recentRecord: '0-0',
         };
       }
@@ -351,7 +351,7 @@ export async function getTopTeams(limit = 32, numGames = 10) {
   );
 
   return teamsWithRecentGames
-    .sort((a, b) => b.hotnessScore - a.hotnessScore)
+    .sort((a, b) => b.momentumScore - a.momentumScore)
     .slice(0, limit);
 }
 
@@ -453,7 +453,7 @@ export async function getGoalieGameLog(playerId, numGames = 10) {
   }
 }
 
-// Get top goalies with hotness calculation
+// Get top goalies with momentum score calculation
 export async function getTopGoalies(numGames = 10) {
   try {
     const leadersData = await getGoalieLeaders(30);
@@ -487,28 +487,161 @@ export async function getTopGoalies(numGames = 10) {
 
         const { stats } = gameLog;
 
-        // Goalie hotness formula: 50% SV%, 30% GAA (inverted), 20% win%
+        // Goalie momentum score formula: 50% SV%, 30% GAA (inverted), 20% win%
         // Normalize each component to 0-1 scale
         const svPctScore = stats.savePct; // already 0-1
         const gaaScore = Math.max(0, 1 - (stats.gaa / 5)); // GAA of 0 = 1.0, GAA of 5+ = 0
         const winScore = stats.winPct; // already 0-1
 
-        const hotnessScore = (svPctScore * 0.5) + (gaaScore * 0.3) + (winScore * 0.2);
+        const momentumScore = (svPctScore * 0.5) + (gaaScore * 0.3) + (winScore * 0.2);
 
         return {
           ...goalie,
           recentStats: stats,
-          hotnessScore,
+          momentumScore,
         };
       })
     );
 
     return goaliesWithStats
       .filter(Boolean)
-      .sort((a, b) => b.hotnessScore - a.hotnessScore)
+      .sort((a, b) => b.momentumScore - a.momentumScore)
       .slice(0, 10);
   } catch (error) {
     console.error('Error fetching top goalies:', error);
     return [];
+  }
+}
+
+// ==================== OILERS-SPECIFIC API FUNCTIONS ====================
+
+// Get Oilers' schedule for the next 7 days
+export async function getOilersWeeklySchedule() {
+  try {
+    const schedule = await getTeamSchedule('EDM');
+    if (!schedule?.games) return [];
+
+    const now = new Date();
+    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    return schedule.games
+      .filter(game => {
+        const gameDate = new Date(game.gameDate);
+        return gameDate >= now && gameDate <= sevenDaysFromNow;
+      })
+      .slice(0, 7)
+      .map(game => ({
+        id: game.id,
+        date: game.gameDate,
+        startTime: game.startTimeUTC,
+        opponent: game.homeTeam?.abbrev === 'EDM' ? game.awayTeam?.abbrev : game.homeTeam?.abbrev,
+        opponentLogo: game.homeTeam?.abbrev === 'EDM' ? game.awayTeam?.logo : game.homeTeam?.logo,
+        opponentName: game.homeTeam?.abbrev === 'EDM' ?
+          game.awayTeam?.placeName?.default : game.homeTeam?.placeName?.default,
+        isHome: game.homeTeam?.abbrev === 'EDM',
+        gameState: game.gameState,
+        homeTeam: game.homeTeam,
+        awayTeam: game.awayTeam,
+      }));
+  } catch (error) {
+    console.error('Error fetching Oilers weekly schedule:', error);
+    return [];
+  }
+}
+
+// Get current or most recent Oilers game (for game center)
+export async function getOilersCurrentGame() {
+  try {
+    const schedule = await getTeamSchedule('EDM');
+    if (!schedule?.games) return null;
+
+    const now = new Date();
+
+    // Find live game
+    const liveGame = schedule.games.find(game =>
+      game.gameState === 'LIVE' || game.gameState === 'CRIT'
+    );
+
+    if (liveGame) {
+      return {
+        ...liveGame,
+        isLive: true,
+        isRecent: false,
+        isUpcoming: false,
+      };
+    }
+
+    // Find most recent completed game (within last 12 hours)
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+    const recentGame = schedule.games
+      .filter(game => (game.gameState === 'OFF' || game.gameState === 'FINAL'))
+      .filter(game => new Date(game.gameDate) >= twelveHoursAgo && new Date(game.gameDate) <= now)
+      .sort((a, b) => new Date(b.gameDate) - new Date(a.gameDate))[0];
+
+    if (recentGame) {
+      return {
+        ...recentGame,
+        isLive: false,
+        isRecent: true,
+        isUpcoming: false,
+      };
+    }
+
+    // Find next upcoming game
+    const upcomingGame = schedule.games
+      .filter(game => game.gameState === 'FUT' || game.gameState === 'PRE')
+      .filter(game => new Date(game.gameDate) >= now)
+      .sort((a, b) => new Date(a.gameDate) - new Date(b.gameDate))[0];
+
+    if (upcomingGame) {
+      return {
+        ...upcomingGame,
+        isLive: false,
+        isRecent: false,
+        isUpcoming: true,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error fetching Oilers current game:', error);
+    return null;
+  }
+}
+
+// Get detailed game information with player stats
+export async function getGameDetails(gameId) {
+  const url = `${BASE_URL}/gamecenter/${gameId}/boxscore`;
+  try {
+    const data = await fetchWithCache(url, `game-${gameId}`, 60000); // 1 min cache for live games
+    return data;
+  } catch (error) {
+    console.error(`Error fetching game details for ${gameId}:`, error);
+    return null;
+  }
+}
+
+// Calculate team momentum score for a specific team
+export async function getTeamMomentumScore(teamAbbrev, numGames = 10) {
+  try {
+    const recentGames = await getTeamRecentGames(teamAbbrev, numGames);
+
+    if (recentGames.length === 0) return 0;
+
+    const recentWins = recentGames.filter(g => g.isWin).length;
+    const recentGoalsFor = recentGames.reduce((sum, g) => sum + g.teamScore, 0);
+    const recentGoalsAgainst = recentGames.reduce((sum, g) => sum + g.oppScore, 0);
+    const recentGoalDiff = recentGoalsFor - recentGoalsAgainst;
+
+    const recentWinPct = recentWins / recentGames.length;
+    const recentGDPerGame = recentGoalDiff / recentGames.length;
+
+    // Momentum score: 60% recent win%, 40% recent goal diff per game
+    const momentumScore = (recentWinPct * 0.6) + ((recentGDPerGame + 3) / 6 * 0.4);
+
+    return momentumScore;
+  } catch (error) {
+    console.error(`Error calculating momentum score for ${teamAbbrev}:`, error);
+    return 0;
   }
 }

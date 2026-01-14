@@ -1,12 +1,19 @@
-/* CSS Variables - NHL/Oilers branded color scheme */
+/* CSS Variables - Edmonton Oilers Color Scheme */
 :root {
-  /* Oilers Primary Colors */
+  /* Oilers Primary Colors - Navy Blue */
   --color-primary: #041E42;
   --color-primary-dark: #021224;
   --color-primary-light: rgba(4, 30, 66, 0.1);
+
+  /* Oilers Accent - Orange */
   --color-accent: #FF4C00;
   --color-accent-dark: #CC3D00;
   --color-accent-light: rgba(255, 76, 0, 0.1);
+
+  /* Oilers Tertiary - Copper */
+  --color-copper: #C77B30;
+  --color-copper-dark: #A86724;
+  --color-copper-light: rgba(199, 123, 48, 0.1);
 
   /* Status Colors */
   --color-success: #059669;
@@ -14,9 +21,9 @@
   --color-error: #dc2626;
   --color-error-light: rgba(220, 38, 38, 0.1);
 
-  /* Hot/Cold Indicators */
-  --color-hot: #FF4C00;
-  --color-cold: #3B82F6;
+  /* Momentum Indicators (formerly Hot/Cold) */
+  --color-high-momentum: #FF4C00;
+  --color-low-momentum: #3B82F6;
 
   /* Surface Colors */
   --color-background: #f1f5f9;
@@ -26,6 +33,7 @@
   --color-hover: #f1f5f9;
   --color-text: #1e293b;
   --color-text-secondary: #64748b;
+  --color-text-light: #94a3b8;
 }
 
 /* Reset */
@@ -53,7 +61,125 @@ body {
   flex-direction: column;
 }
 
-/* Dashboard */
+/* App Header with Navigation */
+.app-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.app-branding {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-logo {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-copper) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 76, 0, 0.3);
+}
+
+.logo-icon {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: -0.05em;
+}
+
+.app-title h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.app-title p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.nav-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-tab.active {
+  background: white;
+  color: var(--color-primary);
+  border-color: var(--color-accent);
+}
+
+.nav-tab.active svg {
+  color: var(--color-accent);
+}
+
+.refresh-button {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refresh-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.refresh-button:active {
+  transform: rotate(180deg);
+}
+
+/* Main Content Area */
+.app-main {
+  flex: 1;
+  background: var(--color-background);
+}
+
+/* Dashboard (for backwards compatibility) */
 .dashboard {
   flex: 1;
   max-width: 1400px;
@@ -120,6 +246,19 @@ body {
 }
 
 /* Footer */
+.app-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
 .dashboard-footer {
   text-align: center;
   padding: 2rem 1rem;
@@ -156,6 +295,51 @@ body {
   .goalies-section,
   .teams-section {
     grid-column: span 12;
+  }
+
+  .app-header-content {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+  }
+
+  .app-branding {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .app-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .app-title h1 {
+    font-size: 1.25rem;
+  }
+
+  .app-title p {
+    font-size: 0.75rem;
+  }
+
+  .app-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.75rem;
+  }
+
+  .nav-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .nav-tab span {
+    display: none;
+  }
+
+  .refresh-button {
+    padding: 0.625rem;
   }
 }
 

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Flame, Filter } from 'lucide-react';
+import { TrendingUp, Filter } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import TeamModal from './TeamModal';
@@ -44,10 +44,10 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
     return (
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Teams</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Teams</h2>
         </div>
-        <LoadingSpinner message="Calculating team hotness..." />
+        <LoadingSpinner message="Calculating team momentum..." />
       </div>
     );
   }
@@ -56,8 +56,8 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
     return (
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Teams</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Teams</h2>
         </div>
         <ErrorMessage message={error} onRetry={onRetry} />
       </div>
@@ -68,8 +68,8 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
     <>
       <div className="card">
         <div className="card-header">
-          <Flame size={20} />
-          <h2>Hottest Teams</h2>
+          <TrendingUp size={20} />
+          <h2>High Momentum Teams</h2>
           <div className="period-selector">
             <span>Last</span>
             <select value={numGames} onChange={(e) => onNumGamesChange(Number(e.target.value))}>
@@ -110,7 +110,7 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
                 <th>Record</th>
                 <th>L{numGames}</th>
                 <th>GD</th>
-                <th className="hotness-col">Hot</th>
+                <th className="momentum-col">Momentum</th>
               </tr>
             </thead>
             <tbody>
@@ -122,7 +122,7 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
                 >
                   <td className="rank-col">
                     {index + 1}
-                    {index < 3 && <Flame size={10} className={`flame flame-${index + 1}`} />}
+                    {index < 3 && <TrendingUp size={10} className={`trending trending-${index + 1}`} />}
                   </td>
                   <td className="team-col">
                     <div className="team-info">
@@ -144,11 +144,11 @@ export default function TopTeams({ teams, loading, error, onRetry, numGames, onN
                   <td className={team.recentGoalDiff >= 0 ? 'positive' : 'negative'}>
                     {formatGoalDiff(team.recentGoalDiff)}
                   </td>
-                  <td className="hotness-col">
-                    <div className="hotness-bar">
+                  <td className="momentum-col">
+                    <div className="momentum-bar">
                       <div
-                        className="hotness-fill"
-                        style={{ width: `${Math.min(team.hotnessScore * 100, 100)}%` }}
+                        className="momentum-fill"
+                        style={{ width: `${Math.min(team.momentumScore * 100, 100)}%` }}
                       />
                     </div>
                   </td>

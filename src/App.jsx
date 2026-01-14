@@ -1,135 +1,74 @@
-import { useState, useCallback } from 'react';
-import Header from './components/Header';
-import Search from './components/Search';
-import TodaysGames from './components/TodaysGames';
-import TopPlayers from './components/TopPlayers';
-import HotGoalies from './components/HotGoalies';
-import TopTeams from './components/TopTeams';
-import TeamHeatMap from './components/TeamHeatMap';
-import Methodology from './components/Methodology';
-import {
-  useTopPlayers,
-  useTopTeams,
-  useTopGoalies,
-  useTodaysGames,
-  useStandings,
-} from './hooks/useNhlData';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Target, BarChart3, RefreshCw } from 'lucide-react';
+import OilersFocusPage from './pages/OilersFocusPage';
+import LeagueStatsPage from './pages/LeagueStatsPage';
 import { clearCache } from './api/nhlApi';
 import './App.css';
 
-function App() {
-  // Independent "last N games" controls for each section
-  const [playerNumGames, setPlayerNumGames] = useState(10);
-  const [goalieNumGames, setGoalieNumGames] = useState(10);
-  const [teamNumGames, setTeamNumGames] = useState(10);
+function Navigation() {
+  const location = useLocation();
 
-  // Data hooks
-  const { data: todaysGames, loading: gamesLoading } = useTodaysGames();
-  const { data: standings } = useStandings(); // For filter options
-
-  const {
-    data: players,
-    loading: playersLoading,
-    error: playersError,
-    refetch: refetchPlayers,
-  } = useTopPlayers(playerNumGames);
-
-  const {
-    data: goalies,
-    loading: goaliesLoading,
-    error: goaliesError,
-    refetch: refetchGoalies,
-  } = useTopGoalies(goalieNumGames);
-
-  const {
-    data: teams,
-    loading: teamsLoading,
-    error: teamsError,
-    refetch: refetchTeams,
-  } = useTopTeams(32, teamNumGames);
-
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = () => {
     clearCache();
-    refetchPlayers();
-    refetchGoalies();
-    refetchTeams();
-  }, [refetchPlayers, refetchGoalies, refetchTeams]);
-
-  const isRefreshing = playersLoading || goaliesLoading || teamsLoading;
+    window.location.reload();
+  };
 
   return (
-    <div className="app">
-      <Header onRefresh={handleRefresh} isRefreshing={isRefreshing} />
-
-      <main className="dashboard">
-        {/* Search */}
-        <div className="dashboard-header">
-          <Search />
+    <header className="app-header">
+      <div className="app-header-content">
+        <div className="app-branding">
+          <div className="app-logo">
+            <div className="logo-icon">EDM</div>
+          </div>
+          <div className="app-title">
+            <h1>Oilers Momentum Tracker</h1>
+            <p>Edmonton Oilers Analytics & League Stats</p>
+          </div>
         </div>
 
-        {/* Today's Games Banner */}
-        <TodaysGames
-          games={todaysGames}
-          loading={gamesLoading}
-          teamHotness={teams}
-        />
+        <nav className="app-nav">
+          <Link
+            to="/"
+            className={`nav-tab ${location.pathname === '/' ? 'active' : ''}`}
+          >
+            <Target size={20} />
+            <span>Oilers Focus</span>
+          </Link>
+          <Link
+            to="/league"
+            className={`nav-tab ${location.pathname === '/league' ? 'active' : ''}`}
+          >
+            <BarChart3 size={20} />
+            <span>League Stats</span>
+          </Link>
+        </nav>
 
-        {/* Main Grid */}
-        <div className="dashboard-grid">
-          {/* Hot Players */}
-          <section className="dashboard-section players-section">
-            <TopPlayers
-              players={players}
-              allTeams={standings}
-              loading={playersLoading}
-              error={playersError}
-              onRetry={refetchPlayers}
-              numGames={playerNumGames}
-              onNumGamesChange={setPlayerNumGames}
-            />
-          </section>
+        <button onClick={handleRefresh} className="refresh-button" title="Refresh data">
+          <RefreshCw size={20} />
+        </button>
+      </div>
+    </header>
+  );
+}
 
-          {/* Hot Goalies */}
-          <section className="dashboard-section goalies-section">
-            <HotGoalies
-              goalies={goalies}
-              allTeams={standings}
-              loading={goaliesLoading}
-              error={goaliesError}
-              onRetry={refetchGoalies}
-              numGames={goalieNumGames}
-              onNumGamesChange={setGoalieNumGames}
-            />
-          </section>
-
-          {/* Hot Teams */}
-          <section className="dashboard-section teams-section">
-            <TopTeams
-              teams={teams}
-              loading={teamsLoading}
-              error={teamsError}
-              onRetry={refetchTeams}
-              numGames={teamNumGames}
-              onNumGamesChange={setTeamNumGames}
-            />
-          </section>
-
-          {/* Team Heat Map */}
-          <section className="dashboard-section heatmap-section">
-            <TeamHeatMap teams={teams} numGames={teamNumGames} />
-          </section>
-        </div>
-
-        {/* Methodology Section */}
-        <Methodology />
-
-        <footer className="dashboard-footer">
+function App() {
+  return (
+    <BrowserRouter>
+      <div className="app">
+        <Navigation />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<OilersFocusPage />} />
+            <Route path="/league" element={<LeagueStatsPage />} />
+          </Routes>
+        </main>
+        <footer className="app-footer">
           <p>
             Data provided by the NHL API. All times shown in Edmonton (MST/MDT).
           </p>
         </footer>
-      </main>
-    </div>
+      </div>
+    </BrowserRouter>
   );
 }
 
