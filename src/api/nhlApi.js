@@ -151,10 +151,11 @@ export async function getPlayerGameLog(playerId, numGames = 10) {
 // Get player stats leaders with hotness calculation
 export async function getTopPlayers(numGames = 10) {
   try {
+    // Fetch more players to ensure filtering works across all positions
     const [pointsData, goalsData, assistsData] = await Promise.all([
-      getSkaterLeaders('points', 30),
-      getSkaterLeaders('goals', 30),
-      getSkaterLeaders('assists', 30),
+      getSkaterLeaders('points', 100),
+      getSkaterLeaders('goals', 100),
+      getSkaterLeaders('assists', 100),
     ]);
 
     // Create a map to aggregate player stats
@@ -193,11 +194,11 @@ export async function getTopPlayers(numGames = 10) {
     // Get all players and fetch their recent game logs
     const players = Array.from(playerMap.values());
 
-    // Fetch game logs for top 20 players to calculate hotness
-    const top20 = players.sort((a, b) => b.points - a.points).slice(0, 20);
+    // Fetch game logs for top 50 players to calculate hotness (more for better filtering)
+    const top50 = players.sort((a, b) => b.points - a.points).slice(0, 50);
 
     const playersWithGameLogs = await Promise.all(
-      top20.map(async (player) => {
+      top50.map(async (player) => {
         const gameLog = await getPlayerGameLog(player.id, numGames);
         return {
           ...player,
@@ -208,10 +209,9 @@ export async function getTopPlayers(numGames = 10) {
       })
     );
 
-    // Sort by recent points per game (hotness)
+    // Sort by recent points per game (hotness) and return more for filtering
     return playersWithGameLogs
-      .sort((a, b) => b.recentPointsPerGame - a.recentPointsPerGame)
-      .slice(0, 10);
+      .sort((a, b) => b.recentPointsPerGame - a.recentPointsPerGame);
   } catch (error) {
     console.error('Error fetching top players:', error);
     return [];

@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Calendar, Flame, Snowflake } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
+import GameComparisonModal from './GameComparisonModal';
 import './TodaysGames.css';
 
 export default function TodaysGames({ games, loading, teamHotness }) {
+  const [selectedGame, setSelectedGame] = useState(null);
   // Function to get team hotness indicator
   const getHotnessIndicator = (teamAbbrev) => {
     if (!teamHotness?.length) return null;
@@ -78,7 +81,14 @@ export default function TodaysGames({ games, loading, teamHotness }) {
           const awayRecord = getTeamRecord(game.awayTeam.abbrev);
 
           return (
-            <div key={game.id} className={`game-card ${status.live ? 'live' : ''}`}>
+            <div
+              key={game.id}
+              className={`game-card ${status.live ? 'live' : ''}`}
+              onClick={() => setSelectedGame(game)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && setSelectedGame(game)}
+            >
               <div className={`game-status ${status.live ? 'live' : ''}`}>
                 {status.live && <span className="live-dot" />}
                 {status.label}
@@ -133,6 +143,14 @@ export default function TodaysGames({ games, loading, teamHotness }) {
           );
         })}
       </div>
+
+      {selectedGame && (
+        <GameComparisonModal
+          game={selectedGame}
+          teamHotness={teamHotness}
+          onClose={() => setSelectedGame(null)}
+        />
+      )}
     </div>
   );
 }

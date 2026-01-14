@@ -1,0 +1,301 @@
+.game-comparison-modal {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.comparison-header {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.comparison-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.comparison-header p {
+  margin: 0.25rem 0 0;
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.comparison-body {
+  display: flex;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.team-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  background: var(--color-surface-alt);
+  border-radius: 0.75rem;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.team-side.hotter {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 20px rgba(255, 76, 0, 0.2);
+}
+
+.hotter-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #FF8C00 100%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 1rem;
+  white-space: nowrap;
+}
+
+.comparison-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.team-side h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.team-division {
+  margin: 0.25rem 0 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.hotness-rank {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.hotness-rank.hot {
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  color: white;
+}
+
+.hotness-rank.warm {
+  background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+  color: white;
+}
+
+.hotness-rank.cool {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.hotness-rank.cold {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  color: white;
+}
+
+.rank-number {
+  font-size: 1.1rem;
+}
+
+.rank-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.team-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+}
+
+.stat-item.highlight {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #FF8C00 100%);
+}
+
+.stat-item.highlight .stat-value,
+.stat-item.highlight .stat-label {
+  color: white;
+}
+
+.stat-item .stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.stat-item .stat-value.positive {
+  color: var(--color-success);
+}
+
+.stat-item .stat-value.negative {
+  color: var(--color-error);
+}
+
+.stat-item .stat-label {
+  font-size: 0.6rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.recent-form-section {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.recent-form-section h4 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
+
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.trend-indicator .trending-up {
+  color: var(--color-success);
+}
+
+.trend-indicator .trending-down {
+  color: var(--color-error);
+}
+
+.trend-indicator .steady {
+  color: var(--color-text-secondary);
+}
+
+.vs-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+}
+
+.vs-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.current-score {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.away-score,
+.home-score {
+  min-width: 24px;
+  text-align: center;
+}
+
+.score-divider {
+  color: var(--color-text-secondary);
+}
+
+.comparison-footer {
+  padding: 1rem 1.5rem;
+  background: var(--color-surface-alt);
+  border-radius: 0 0 1rem 1rem;
+  text-align: center;
+}
+
+.comparison-footer p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.comparison-footer .flame-icon {
+  color: var(--color-accent);
+}
+
+.no-data {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  padding: 1rem 0;
+}
+
+@media (max-width: 600px) {
+  .comparison-body {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .vs-divider {
+    flex-direction: row;
+    padding: 0.75rem 0;
+    gap: 1rem;
+  }
+
+  .current-score {
+    margin-top: 0;
+  }
+
+  .team-side {
+    padding: 1rem;
+  }
+
+  .comparison-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .team-side h3 {
+    font-size: 1rem;
+  }
+
+  .team-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
