@@ -38,13 +38,13 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
     return players.filter(player => {
       // Position filter
       if (filters.position !== 'all') {
-        // Map position filter to actual position codes
+        // Map position filter to actual position codes (API uses C, L, R, D, G)
         const positionMap = {
-          F: ['C', 'L', 'R', 'LW', 'RW'],
-          C: ['C'],
-          LW: ['L', 'LW'],
-          RW: ['R', 'RW'],
-          D: ['D'],
+          F: ['C', 'L', 'R'],  // All forwards
+          C: ['C'],            // Center
+          L: ['L'],            // Left Wing
+          R: ['R'],            // Right Wing
+          D: ['D'],            // Defense
         };
         const validPositions = positionMap[filters.position] || [filters.position];
         if (!validPositions.includes(player.position)) return false;
@@ -134,8 +134,8 @@ export default function TopPlayers({ players, allTeams, loading, error, onRetry,
             <option value="all">All Positions</option>
             <option value="F">Forwards</option>
             <option value="C">Center</option>
-            <option value="LW">Left Wing</option>
-            <option value="RW">Right Wing</option>
+            <option value="L">Left Wing</option>
+            <option value="R">Right Wing</option>
             <option value="D">Defense</option>
           </select>
 

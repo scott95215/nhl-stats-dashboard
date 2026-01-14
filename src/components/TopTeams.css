@@ -24,7 +24,10 @@
 }
 
 .teams-table-container {
+  max-height: 400px;
+  overflow-y: auto;
   overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .teams-table {
@@ -43,6 +46,10 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  z-index: 1;
 }
 
 .teams-table td {

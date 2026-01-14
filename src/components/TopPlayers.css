@@ -53,8 +53,9 @@
 }
 
 .players-list.scrollable {
-  max-height: 450px;
+  max-height: 400px;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .player-row {
